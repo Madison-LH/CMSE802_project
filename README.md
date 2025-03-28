@@ -8,7 +8,7 @@ A computer vision project utilizing  a CNN (MobileNet V2) for multi-category ima
 2. Implement data augmentation techniques to artificially balance out classes (since the dataset is unbalanced)
 3. Create a dataset of images extracted from the video frames captured in the lab 
 # Instructions: 
-This notebook requires the installation of additional python packages. The packages can be installed via pip install [package_name] or via conda install -c [channel] [package_name]. Please installthe latest versions of each of the packages. The packages needed are os for operating system functions, shutil for file operations, cv2 for image processing, matplotlib and seaborn for plotting, re for regular expressions, random for shuffling and random number generation, PIL the python imaging library, tensorflow for the machine learning functions, sklearn for the model insights, numpy for numerical operations, and pandas for making dataframes. 
+This notebook requires the installation of additional Python packages. The packages can be installed via pip install [package_name] or via conda install -c [channel] [package_name]. Please install the latest version of each of the packages. The packages needed are os for operating system functions, shutil for file operations, cv2 for image processing, matplotlib and seaborn for plotting, re for regular expressions, random for shuffling and random number generation, PIL the python imaging library, tensorflow for the machine learning functions, sklearn for the model insights, numpy for numerical operations, and pandas for making dataframes. 
 Other requirments include:
 skimage for image augmentation
 tqdm for progress visualization
