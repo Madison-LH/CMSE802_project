@@ -1,0 +1,20 @@
+packages required to run all project scripts
+
+os
+random
+sci-kit learn
+tensorflow
+numpy 
+sklearn.metric
+PIL
+os
+seaborn
+matplotlib
+OpenCV
+sci-kit image
+tqdm 
+multiprocessing
+pandas
+glob
+
+
