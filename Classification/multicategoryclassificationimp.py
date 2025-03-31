@@ -106,13 +106,14 @@ model.save("mobilenet_behavior_classifier.keras")  # SavedModel or Keras HDF5 fo
 
 y_true = []
 y_pred = []
+all_probs = []  # Initialize the list to store probabilities
 
 for images, labels in test_ds:
-    preds = model.predict(images, verbose=0)
-    preds = np.argmax(preds, axis=1)
+    probs = model.predict(images, verbose=0)  # Get predicted probabilities
+    preds = np.argmax(probs, axis=1)  # Get predicted classes
     y_pred.extend(preds)
     y_true.extend(labels.numpy())
-
+    all_probs.extend(probs)  # Store the raw probabilities
 
 print(classification_report(y_true, y_pred, target_names=classes))
 
