@@ -2,7 +2,7 @@
 """
 Module for dataset augmentation/balancing
 
-This module contains functions for augmenting 
+This module contains functions for augmenting
 and balancing the the imbalanced classes with
 synthetic data (rotations, flips, inversions, etc)
 
@@ -16,9 +16,10 @@ import numpy as np
 import random
 import multiprocessing
 from skimage import io, util
-from skimage.exposure import rescale_intensity, adjust_gamma
+from skimage.exposure import rescale_intensity
 from skimage.transform import rotate
 from tqdm import tqdm
+
 
 def augment_and_balance_dataset(input_dir, output_dir, target_class_balance=88203):
     """
@@ -48,16 +49,19 @@ def augment_and_balance_dataset(input_dir, output_dir, target_class_balance=8820
         class_output_path = os.path.join(output_dir, class_label)
         os.makedirs(class_output_path, exist_ok=True)
 
-        image_files = [f for f in os.listdir(class_input_path) if f.endswith(('png', 'jpg', 'jpeg'))]
+        image_files = [f for f in os.listdir(
+            class_input_path) if f.endswith(('png', 'jpg', 'jpeg'))]
         if not image_files:
             print(f"⚠️ Warning: No images found in {class_input_path}")
             continue
 
-        images = {img_file: os.path.join(class_input_path, img_file) for img_file in image_files}
+        images = {img_file: os.path.join(
+            class_input_path, img_file) for img_file in image_files}
 
         # Keep augmenting until target size is reached
         while count < target_size:
-            image_sample = random.sample(image_files, min(len(image_files), target_size - count))
+            image_sample = random.sample(image_files, min(
+                len(image_files), target_size - count))
 
             for img_name in image_sample:
                 img_path = images[img_name]
@@ -68,7 +72,8 @@ def augment_and_balance_dataset(input_dir, output_dir, target_class_balance=8820
         print("✅ No augmentation needed. Dataset already balanced.")
         return
 
-    print(f"🚀 Augmenting {len(tasks)} images using {min(multiprocessing.cpu_count(), 8)} workers...")
+    print(
+        f"🚀 Augmenting {len(tasks)} images using {min(multiprocessing.cpu_count(), 8)} workers...")
 
     # Use multiprocessing with tqdm for progress tracking
     with multiprocessing.Pool(processes=min(multiprocessing.cpu_count(), 8)) as pool:
@@ -76,6 +81,7 @@ def augment_and_balance_dataset(input_dir, output_dir, target_class_balance=8820
             pass
 
     print("🎉 Augmentation completed!")
+
 
 def process_image(task):
     """
@@ -108,6 +114,7 @@ def process_image(task):
     except Exception as e:
         print(f"❌ Error processing {img_path}: {e}")
 
+
 def random_augment(image):
     """
     Applies a random augmentation to an image while ensuring it remains readable.
@@ -131,14 +138,16 @@ def random_augment(image):
     # Rotate image (smaller range to prevent distortions)
     if np.random.rand() > 0.5:
         angle = np.random.uniform(-15, 15)  # More conservative rotation range
-        image = rotate(image, angle=angle, mode='reflect', preserve_range=True).astype(np.uint8)
+        image = rotate(image, angle=angle, mode='reflect',
+                       preserve_range=True).astype(np.uint8)
         aug_desc.append(f"rotated{int(angle)}")
 
     # Rescale intensity safely (only if contrast is too low)
     min_val, max_val = image.min(), image.max()
     if np.random.rand() > 0.5 and max_val - min_val < 50:  # Require significant contrast difference
         image = image.astype(np.float32) / 255.0  # Normalize
-        image = rescale_intensity(image, in_range=(min_val, max_val), out_range=(0, 1))
+        image = rescale_intensity(image, in_range=(
+            min_val, max_val), out_range=(0, 1))
         image = (image * 255).astype(np.uint8)
         aug_desc.append("rescaled")
 
@@ -153,11 +162,14 @@ def random_augment(image):
 
     # **Final safeguard: Fix extremely dark images**
     if mean_pixel < 20:  # If the image is too dark, apply contrast stretch
-        image = rescale_intensity(image, in_range=(0, 40), out_range=(0, 255))  # Stretch dark values
+        image = rescale_intensity(image, in_range=(
+            0, 40), out_range=(0, 255))  # Stretch dark values
         aug_desc.append("contrast_stretched")
 
     aug_desc = "_".join(aug_desc) if aug_desc else "original"
     return np.clip(image, 0, 255).astype(np.uint8), aug_desc
 
+
 if __name__ == "__main__":
-    augment_and_balance_dataset(r"E:\Multicategory_frames", r"E:\Augmented_frames")
+    augment_and_balance_dataset(
+        r"E:\Multicategory_frames", r"E:\Augmented_frames")
